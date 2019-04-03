@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<link rel="stylesheet" type="text/css" href="style challenge.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+$(document).ready(function() {
+    $('.submitAdress').click(function(e) {  
+            var value = $(".addressclass").val(); 
+            if (value == ""){
+              alert("Please add a valid address");
+            }
+            // use blockcypher API to balance of given address and display it to user
+        $.get('https://api.blockcypher.com/v1/btc/main/addrs/'+value+'/balance').then(function(d) {document.getElementById("balancetext").innerHTML += d['balance'];
+});
+
+    });
+$('.submitTransaction').click(function(e) {  
+  // populate needed values for the API to use to send Transactions
+            var OldAddress = $("#OldAddress").val(); 
+            var NewAddress = $("#NewAddress").val(); 
+            var value_Amount = $("#Amount").val(); 
+            var newtx = {
+  inputs: [{addresses: [OldAddress]}],
+  outputs: [{addresses: [NewAddress], value: value_Amount}]
+};
+// check null values
+            if (OldAddress == ""){
+              alert("Please add a valid From address");
+            }
+            else if (NewAddress == ""){
+              alert("Please add a valid To Address");
+            } 
+            else if (value_Amount == ""){
+              alert("Please add a valid Amount");
+            }
+            // use API to send transaction using given values from the user
+$.post('https://api.blockcypher.com/v1/bcy/test/txs/new', JSON.stringify(newtx))
+  .then(function(d) {console.log(d)});
+    });
+
+});
+</script>
+</head>
+<body>
+
+	<div class="heading"><p>Coding challenge Website</p></div>
+<!--  div element used to crated the 1 of the main boxes that ask for input
+ -->  <div class="main">
+    <p class="sign" align="center">Sign in</p>
+<!--     used to ask user for input then send value to jQuery
+ -->    <form class="form" method="post">
+      <input class="addressclass" type="text" placeholder="Enter Address here" id = address value="">
+      <p id="balancetext">The balance for the address is: </p>
+
+<div class = "submitAdress">Click here to get balance</div>
+    </div>
+<!--  div element used to crated the 1 of the main boxes that ask for input-->
+     <div class="main1">
+    <p class="sign" align="center">Transactions</p>
+    <form class="form">
+      <!--     used to ask user for input then send value to jQuery-->
+      <input class="addressclass" type="text" placeholder="Enter 'From' Address here" id = OldAddress value="">
+      <input class="addressclass" type="text" placeholder="Enter 'To' Address here" id = NewAddress value="">
+      <input class="addressclass" type="text" placeholder="Enter Amount here" id = Amount value="">
+<div class = "submitTransaction">Click here to get Transfer amount</div>
+    </div>
+</body>
+</html>
